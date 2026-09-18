@@ -22,6 +22,20 @@ services:
       retries: 3
       start_period: 5s
 
+  # Shared vector DB. Apps on the proxy network reach it as
+  # http://hostinger-qdrant:6333. No ports published: Qdrant has no auth by default.
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: hostinger-qdrant
+    restart: unless-stopped
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks:
+      - proxy
+
+volumes:
+  qdrant_storage:
+
 networks:
   # Shared with app stacks (next-rag, aam, ...). Create once on the VPS:
   #   docker network create proxy
