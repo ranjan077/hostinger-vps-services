@@ -12,6 +12,8 @@ services:
       - ./site:/usr/share/nginx/html:ro
       - ./certbot/www:/var/www/certbot:ro
       - ./letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - proxy
     healthcheck:
       test:
         ["CMD-SHELL", "wget --spider --quiet http://127.0.0.1/health || exit 1"]
@@ -19,3 +21,9 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+
+networks:
+  # Shared with app stacks (next-rag, aam, ...). Create once on the VPS:
+  #   docker network create proxy
+  proxy:
+    external: true
